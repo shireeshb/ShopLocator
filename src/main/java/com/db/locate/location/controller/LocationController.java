@@ -27,7 +27,7 @@ public class LocationController {
 	 */
 		
 	@RequestMapping(value="/location", method=RequestMethod.POST)
-	public String locatePosition(@RequestBody ShopDetails shopDetails) throws IOException{
+	public String locatePosition(@RequestBody ShopDetails shopDetails) {
 		
 		String details = locationService.convertToLatLong(shopDetails);		
 		return details;
@@ -41,7 +41,7 @@ public class LocationController {
 	 * @throws IOException
 	 */
 	@RequestMapping("/shop")
-	public String locateNearestShop(@RequestParam(value = "customerLatitude") String lat, @RequestParam(value = "customerLongitude") String lng) throws IOException {
+	public String locateNearestShop(@RequestParam(value = "customerLatitude") String lat, @RequestParam(value = "customerLongitude") String lng)  {
 
 		String latlng = String.format("%s,%s", lat,lng );
 		String shopAddress = locationService.convertFromLatLong(latlng);
