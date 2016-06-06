@@ -2,32 +2,32 @@ package com.db.locate.location.controller;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.db.locate.util.GoogleResponse;
-import com.db.locate.util.Result;
-import com.db.locate.util.LocationConvertor;;
+import com.db.locate.location.dto.GoogleResponse;
+import com.db.locate.location.dto.Result;
+import com.db.locate.location.service.LocationService;
+
 
 @RestController
 @RequestMapping("/locate")
 public class LocationController {
 	
+	@Autowired
+	private LocationService locationService;
 	/**
 	 * This method will return the longitude and latitude
 	 * @param address
 	 * @return
+	 * @throws IOException 
 	 */
 	@RequestMapping("/location")
-	public String locatePosition(@RequestParam(value="address",defaultValue="Pune") String address){
-		GoogleResponse res = null;
-		try {
-			res = new LocationConvertor().convertToLatLong(address);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String locatePosition(@RequestParam(value="address",defaultValue="Pune") String address) throws IOException{
+		GoogleResponse res = locationService.convertToLatLong(address);
+		
 		if (res.getStatus().equals("OK")) {
 			for (Result result : res.getResults())
 				return String.format("Address Lattitude: %s, Longitude: %s Location: %s",
@@ -51,7 +51,7 @@ public class LocationController {
 	public String locateNearestShop(@RequestParam(value = "lat") String lat, @RequestParam(value = "lng") String lng) throws IOException {
 
 		String latlng = String.format("%s,%s", lat,lng );
-		GoogleResponse res = new LocationConvertor().convertFromLatLong(latlng);
+		GoogleResponse res = locationService.convertFromLatLong(latlng);
 		if (res.getStatus().equals("OK")) {
 			for (Result result : res.getResults())
 				return String.format("Lattitude: %s, Longitude: %s Address: %s",
